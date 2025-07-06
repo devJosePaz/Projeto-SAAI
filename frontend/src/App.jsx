@@ -1,4 +1,4 @@
-import CadastroUsuario from "./pages/CadastroUsuario";
+import CadastroUsuario from "./pages/Register";
 
 function App() {
   return (
