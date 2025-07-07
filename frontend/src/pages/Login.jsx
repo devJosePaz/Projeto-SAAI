@@ -1,34 +1,37 @@
 import { useState } from "react";
 
-export default function Register() {
+export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [mensagem, setMensagem] = useState("");
+  const [token, setToken] = useState("");
 
-  const handleCadastro = async () => {
+  const handleLogin = async () => {
     try {
-      const resposta = await fetch("http://localhost:8000/auth/register", {
+      const resposta = await fetch("http://localhost:8000/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
       });
 
+      const dados = await resposta.json();
+
       if (resposta.ok) {
-        setMensagem("Usuário cadastrado com sucesso!");
-        setUsername("");
-        setPassword("");
+        setMensagem("Login bem-sucedido!");
+        setToken(dados.access_token);
       } else {
-        const erro = await resposta.json();
-        setMensagem(`Erro: ${erro.detail}`);
+        setMensagem(`Erro: ${dados.detail}`);
+        setToken("");
       }
     } catch (err) {
       setMensagem("Erro na conexão com o servidor");
+      setToken("");
     }
   };
 
   return (
     <div style={{ padding: "2rem" }}>
-      <h2>Cadastro de Usuário</h2>
+      <h2>Login de Usuário</h2>
       <input
         type="text"
         placeholder="Usuário"
@@ -43,8 +46,20 @@ export default function Register() {
         onChange={(e) => setPassword(e.target.value)}
       />
       <br />
-      <button onClick={handleCadastro}>Cadastrar</button>
+      <button onClick={handleLogin}>Entrar</button>
       <p>{mensagem}</p>
+      {token && (
+        <div>
+          <p>
+            <strong>Token JWT:</strong>
+          </p>
+          <textarea
+            readOnly
+            value={token}
+            style={{ width: "100%", height: "100px" }}
+          />
+        </div>
+      )}
     </div>
   );
 }
