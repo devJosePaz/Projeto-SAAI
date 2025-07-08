@@ -1,9 +1,8 @@
-# SAAI/backend/app/auth/models.py
-from sqlalchemy import Column, Integer, String, DateTime, func, ForeignKey # Adicionado DateTime e func
+from sqlalchemy import Column, Integer, String, DateTime, func, ForeignKey 
 from sqlalchemy.orm import relationship
-from ..database import Base # Importa Base do seu database.py
+from ..database import Base 
 
-# Seu modelo User existente
+
 class User(Base):
     __tablename__ = "users"
 
@@ -14,7 +13,7 @@ class User(Base):
 
     study_plans = relationship("StudyPlan", back_populates="owner")
 
-# Seu novo modelo StudyPlan
+
 class StudyPlan(Base):
     __tablename__ = "study_plans"
 

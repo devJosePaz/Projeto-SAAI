@@ -1,9 +1,8 @@
-# SAAI/backend/app/main.py
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from backend.app.auth import routes as auth_routes
-from backend.app.study_plans import routes as study_plans_routes # Certifique-se que esta linha existe
+from backend.app.study_plans import routes as study_plans_routes 
 from backend.app.database import Base, engine
 
 app = FastAPI()
@@ -27,7 +26,7 @@ def on_startup():
     print("Tabelas do banco de dados criadas/verificadas.")
 
 app.include_router(auth_routes.router)
-app.include_router(study_plans_routes.router) # Certifique-se que esta linha existe
+app.include_router(study_plans_routes.router) 
 
 @app.get("/")
 async def root():
