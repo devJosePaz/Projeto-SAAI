@@ -1,6 +1,8 @@
+// SAAI/frontend/src/pages/Register.jsx
 import { useState } from "react";
 
 export default function Register() {
+  // Nome do componente ajustado
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [mensagem, setMensagem] = useState("");
@@ -10,7 +12,7 @@ export default function Register() {
       const resposta = await fetch("http://localhost:8000/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username, password }), // <--- ESTA LINHA É CRÍTICA
       });
 
       if (resposta.ok) {
@@ -19,9 +21,12 @@ export default function Register() {
         setPassword("");
       } else {
         const erro = await resposta.json();
-        setMensagem(`Erro: ${erro.detail}`);
+        // Adicione um console.error para ver os detalhes do erro 422
+        console.error("Erro no cadastro (detalhes):", erro);
+        setMensagem(`Erro: ${erro.detail || "Ocorreu um erro."}`); // Melhorar a mensagem de erro
       }
     } catch (err) {
+      console.error("Erro na conexão com o servidor:", err); // Log de erro de rede
       setMensagem("Erro na conexão com o servidor");
     }
   };

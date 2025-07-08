@@ -1,32 +1,28 @@
-// SAAI/frontend/src/pages/StudyPlanForm.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function StudyPlanForm() {
   const [theme, setTheme] = useState("");
-  const [dailyTime, setDailyTime] = useState(""); // Em minutos, por exemplo
+  const [dailyTime, setDailyTime] = useState(""); // Estado no frontend (camelCase)
   const [objective, setObjective] = useState("");
-  const [learningStyle, setLearningStyle] = useState("visual"); // Valor padrão
+  const [learningStyle, setLearningStyle] = useState("visual");
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
-  // Função para verificar se o usuário está logado
   useEffect(() => {
     const token = localStorage.getItem("jwt_token");
     if (!token) {
-      // Se não houver token, redireciona para a página de login
       alert("Você precisa estar logado para acessar esta página.");
       navigate("/login");
     } else {
-      setLoading(false); // Token encontrado, desativa o estado de carregamento
+      setLoading(false);
     }
-  }, [navigate]); // O 'navigate' é uma dependência do useEffect para que ele seja re-executado se 'navigate' mudar (embora improvável)
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Previne o recarregamento da página
+    e.preventDefault();
 
-    // Exemplo de como você obterá o token para enviar ao backend
     const token = localStorage.getItem("jwt_token");
     if (!token) {
       setErrorMessage("Erro: Você não está logado.");
@@ -34,55 +30,46 @@ export default function StudyPlanForm() {
     }
 
     const formData = {
-      theme,
-      daily_time: parseInt(dailyTime), // Certifique-se de que é um número
-      objective,
+      // CORREÇÃO AQUI: Mapear nomes do frontend (camelCase) para backend (snake_case)
+      theme: theme,
+      daily_time: parseInt(dailyTime), // 'daily_time' para corresponder ao backend
+      objective: objective,
       learning_style: learningStyle,
     };
 
     console.log("Dados do formulário a serem enviados:", formData);
-    // Aqui você faria a requisição para o backend
-    // Ex: const response = await fetch('http://localhost:8000/study_plans/', { ... });
-    // Por enquanto, apenas exibimos uma mensagem
-    setErrorMessage(""); // Limpa mensagens de erro anteriores
+    setErrorMessage("");
 
     try {
-      // Simulação de chamada de API
-      // Substitua isso pela sua chamada real ao backend quando ele estiver pronto
-      // const response = await fetch('http://localhost:8000/study_plans/', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     'Authorization': `Bearer ${token}` // Envia o token no cabeçalho
-      //   },
-      //   body: JSON.stringify(formData)
-      // });
+      const response = await fetch("http://localhost:8000/study_plans/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
 
-      // if (response.ok) {
-      //   const data = await response.json();
-      //   alert('Plano de estudo gerado com sucesso!');
-      //   console.log('Plano gerado:', data);
-      //   // Limpar formulário ou redirecionar
-      //   setTheme('');
-      //   setDailyTime('');
-      //   setObjective('');
-      //   setLearningStyle('visual');
-      // } else {
-      //   const errorData = await response.json();
-      //   setErrorMessage(`Erro ao gerar plano: ${errorData.detail || 'Ocorreu um erro.'}`);
-      //   // Se for 401, token inválido/expirado, redirecionar para login
-      //   if (response.status === 401) {
-      //     localStorage.removeItem('jwt_token');
-      //     navigate('/login');
-      //   }
-      // }
-
-      // Simulação de sucesso
-      alert("Dados do formulário prontos para serem enviados ao backend!");
-      setTheme("");
-      setDailyTime("");
-      setObjective("");
-      setLearningStyle("visual");
+      if (response.ok) {
+        const data = await response.json();
+        alert("Plano de estudo gerado com sucesso!");
+        console.log("Plano gerado:", data);
+        setTheme("");
+        setDailyTime("");
+        setObjective("");
+        setLearningStyle("visual");
+      } else {
+        const errorData = await response.json();
+        // O FastAPI geralmente retorna detalhes do erro 422 aqui
+        console.error("Erro ao gerar plano (detalhes):", errorData);
+        setErrorMessage(
+          `Erro ao gerar plano: ${errorData.detail || "Ocorreu um erro."}`
+        );
+        if (response.status === 401) {
+          localStorage.removeItem("jwt_token");
+          navigate("/login");
+        }
+      }
     } catch (error) {
       console.error("Erro na submissão do formulário:", error);
       setErrorMessage("Erro na conexão com o servidor.");
@@ -163,7 +150,7 @@ export default function StudyPlanForm() {
             value={dailyTime}
             onChange={(e) => setDailyTime(e.target.value)}
             placeholder="Ex: 60 (para 1 hora)"
-            min="10" // Mínimo de 10 minutos
+            min="10"
             required
             style={{
               width: "100%",
@@ -235,7 +222,6 @@ export default function StudyPlanForm() {
             <option value="kinesthetic">
               Cinestésico (aprende melhor fazendo/praticando)
             </option>
-            {/* Adicione mais opções se desejar */}
           </select>
         </div>
 

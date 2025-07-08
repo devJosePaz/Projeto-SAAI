@@ -1,10 +1,13 @@
+// SAAI/frontend/src/pages/Login.jsx
 import { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Importar useNavigate
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [mensagem, setMensagem] = useState("");
-  const [token, setToken] = useState("");
+  const [token, setToken] = useState(""); // Ainda vamos exibir por enquanto
+  const navigate = useNavigate(); // Hook para navegação programática
 
   const handleLogin = async () => {
     try {
@@ -19,6 +22,13 @@ export default function Login() {
       if (resposta.ok) {
         setMensagem("Login bem-sucedido!");
         setToken(dados.access_token);
+        // PASSO NOVO E CRÍTICO: Salvar o token no localStorage
+        localStorage.setItem("jwt_token", dados.access_token);
+        // Opcional: Limpar campos
+        setUsername("");
+        setPassword("");
+        // CRÍTICO: Redirecionar para a rota protegida
+        navigate("/generate-plan");
       } else {
         setMensagem(`Erro: ${dados.detail}`);
         setToken("");
@@ -48,7 +58,7 @@ export default function Login() {
       <br />
       <button onClick={handleLogin}>Entrar</button>
       <p>{mensagem}</p>
-      {token && (
+      {token && ( // Manter a exibição do token por enquanto para debug
         <div>
           <p>
             <strong>Token JWT:</strong>
