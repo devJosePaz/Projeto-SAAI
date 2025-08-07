@@ -14,7 +14,7 @@ router = APIRouter(
 )
 
 @router.post("/", response_model=StudyPlanResponse, status_code=status.HTTP_201_CREATED)
-async def create_study_plan(
+def create_study_plan(
     study_plan: StudyPlanCreate,
     current_user: auth_models.User = Depends(get_current_user),
     db: Session = Depends(get_db)

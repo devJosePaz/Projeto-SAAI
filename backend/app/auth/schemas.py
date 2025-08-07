@@ -2,21 +2,25 @@ from pydantic import BaseModel, Field
 from typing import Optional
 
 class UserCreate(BaseModel):
-    username: str 
+    email: str 
     password: str 
 
 class UserLogin(BaseModel):
-    username: str
+    email: str
     password: str
 
 class UserResponse(BaseModel):
     id: int
-    username: str
+    email: str
 
     class Config:
         from_attributes = True 
 
-# Schema para os dados contidos no token JWT
+
 class TokenData(BaseModel):
-    username: Optional[str] = None 
+    email: Optional[str] = None 
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str
 
