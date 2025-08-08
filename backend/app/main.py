@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.app.auth import routes as auth_routes
-from backend.app.study_plans import routes as study_plans_routes 
-from backend.app.database import Base, engine
+from app.auth import routes as auth_routes
+from app.study_plans import routes as study_plans_routes 
+from app.database import Base, engine
 
 app = FastAPI()
 

@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from backend.app.database import get_db
-from backend.app.auth.dependencies import get_current_user 
+from app.database import get_db
+from app.auth.dependencies import get_current_user 
 
-from backend.app.auth import models as auth_models
-from backend.app.auth import schemas as auth_schemas
-from backend.app.study_plans.models import StudyPlan
-from backend.app.study_plans.schemas import StudyPlanCreate, StudyPlanResponse
+from app.auth import models as auth_models
+from app.auth import schemas as auth_schemas
+from app.study_plans.models import StudyPlan
+from app.study_plans.schemas import StudyPlanCreate, StudyPlanResponse
 
 router = APIRouter(
     prefix="/study_plans",
