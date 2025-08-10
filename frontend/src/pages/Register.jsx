@@ -3,7 +3,7 @@ import { useState } from "react";
 
 export default function Register() {
   // Nome do componente ajustado
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [mensagem, setMensagem] = useState("");
 
@@ -12,12 +12,12 @@ export default function Register() {
       const resposta = await fetch("http://localhost:8000/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }), // <--- ESTA LINHA É CRÍTICA
+        body: JSON.stringify({email, password }), // <--- ESTA LINHA É CRÍTICA
       });
 
       if (resposta.ok) {
         setMensagem("Usuário cadastrado com sucesso!");
-        setUsername("");
+        setEmail("");
         setPassword("");
       } else {
         const erro = await resposta.json();
@@ -37,8 +37,8 @@ export default function Register() {
       <input
         type="text"
         placeholder="Usuário"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
       />
       <br />
       <input
