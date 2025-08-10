@@ -1,6 +1,5 @@
-# SAAI/backend/app/auth/dependencies.py
 from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import HTTPBearer
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 from datetime import datetime, timezone
@@ -9,6 +8,7 @@ from app.auth import models, schemas
 from config import settings
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
+
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -19,7 +19,7 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         payload = jwt.decode(token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM])
 
         email: str = payload.get("sub")
-        if username is None:
+        if email is None:
             raise credentials_exception
 
         expire_timestamp = payload.get("exp")

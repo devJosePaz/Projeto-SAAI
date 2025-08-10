@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends, status
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.auth import models, schemas, utils
-
+from typing import List
 
 router = APIRouter(
     prefix="/auth",
@@ -38,5 +38,13 @@ def login(user_data: schemas.UserLogin, db: Session = Depends(get_db)):
     access_token = utils.create_access_token({"sub": user.username})
 
     return {"access_token": access_token, "token_type": "bearer"}
+
+@router.get("/users", response_model=List[schemas.UserResponse], status_code=status.HTTP_200_OK)
+def get_users(db: Session = Depends(get_db)):
+    users = db.query(models.User).all()
+
+    if not users:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="erro: nenhum usuário encontrado.")
+    return users
 
 
