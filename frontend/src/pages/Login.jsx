@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom"; // Importar useNavigate
 
 export default function Login() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [mensagem, setMensagem] = useState("");
   const [token, setToken] = useState(""); // Ainda vamos exibir por enquanto
@@ -14,7 +14,7 @@ export default function Login() {
       const resposta = await fetch("http://localhost:8000/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ email, password }),
       });
 
       const dados = await resposta.json();
@@ -25,7 +25,7 @@ export default function Login() {
         // PASSO NOVO E CRÍTICO: Salvar o token no localStorage
         localStorage.setItem("jwt_token", dados.access_token);
         // Opcional: Limpar campos
-        setUsername("");
+        setEmail("");
         setPassword("");
         // CRÍTICO: Redirecionar para a rota protegida
         navigate("/generate-plan");
@@ -45,8 +45,8 @@ export default function Login() {
       <input
         type="text"
         placeholder="Usuário"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
       />
       <br />
       <input
