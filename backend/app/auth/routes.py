@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends, status
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.auth import models, schemas, utils
@@ -26,16 +27,16 @@ def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
     return new_user
 
 @router.post("/login", response_model=schemas.TokenResponse, status_code=status.HTTP_200_OK)
-def login(user_data: schemas.UserLogin, db: Session = Depends(get_db)):
-    user = db.query(models.User).filter(models.User.email == user_data.email).first()
+def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.email == form_data.username).first()
 
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"erro: usuário '{user}' não encontrado.")
     
-    if not utils.verify_password(data.password, user.hashed_password):
+    if not utils.verify_password(form_data.password, user.hashed_password):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="erro: senha incorreta.")
     
-    access_token = utils.create_access_token({"sub": user.username})
+    access_token = utils.create_access_token({"sub": user.email})
 
     return {"access_token": access_token, "token_type": "bearer"}
 

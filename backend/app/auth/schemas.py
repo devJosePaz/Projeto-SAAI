@@ -17,7 +17,6 @@ class UserResponse(BaseModel):
     class Config:
         from_attributes = True 
 
-
 class TokenData(BaseModel):
     email: Optional[str] = None 
 

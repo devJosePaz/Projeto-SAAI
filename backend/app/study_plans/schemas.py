@@ -1,17 +1,15 @@
 from pydantic import BaseModel
+from uuid import UUID
 
-class StudyPlanBase(BaseModel):
+class StudyPlanCreate(BaseModel):
     theme: str 
     daily_time: int 
     objective: str 
     learning_style: str 
+    
 
-
-class StudyPlanCreate(StudyPlanBase):
-    pass
-
-class StudyPlanResponse(StudyPlanBase):
-    id: int 
+class StudyPlanResponse(BaseModel):
+    id: UUID 
     owner_id: int 
 
     class Config:
